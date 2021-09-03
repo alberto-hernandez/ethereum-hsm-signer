@@ -9,4 +9,8 @@ public class SignerException extends RuntimeException {
   public SignerException(final String message, final Throwable cause) {
     super(message, cause);
   }
+
+  public SignerException(final Throwable cause) {
+    super(cause);
+  }
 }
