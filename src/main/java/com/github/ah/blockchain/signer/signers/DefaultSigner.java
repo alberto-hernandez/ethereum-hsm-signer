@@ -2,7 +2,6 @@ package com.github.ah.blockchain.signer.signers;
 
 import com.github.ah.blockchain.signer.Signer;
 import com.github.ah.blockchain.signer.signature.ECDSASignature;
-import com.github.ah.blockchain.signer.signature.Hash;
 import com.github.ah.blockchain.signer.signature.SECP256K1KeyPair;
 import java.math.BigInteger;
 import org.apache.tuweni.bytes.Bytes;
@@ -24,8 +23,7 @@ public class DefaultSigner implements Signer {
 
   @Override
   public Address getAddress() {
-    Bytes value = Bytes.wrap(Hash.sha3(keyPair.getPublicKey().toByteArray()));
-    return Address.fromBytes(value.slice(12));
+    return SECP256K1KeyPair.toAddress(keyPair.getPublicKey());
   }
 
   @Override

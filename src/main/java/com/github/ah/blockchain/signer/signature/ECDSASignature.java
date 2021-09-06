@@ -3,7 +3,6 @@ package com.github.ah.blockchain.signer.signature;
 import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.asn1.x9.X9IntegerConverter;
@@ -36,14 +35,13 @@ public class ECDSASignature {
     try {
       byte[] messageHash = Hash.sha3(transaction.toArray());
       // Calculate R & S
-      BigInteger[] signature = signer.generateSignature(messageHash);
+      final BigInteger[] signature = signer.generateSignature(messageHash);
+      final BigInteger rValue = signature[0];
+      final BigInteger sValue = toCanonical(signature[1]);
 
-      byte v = computeV(signature[0], signature[1], messageHash);
+      byte v = computeV(rValue, sValue, messageHash);
 
-      return Bytes.concatenate(
-          Bytes.of(v),
-          Bytes32.fromHexString(signature[0].toString(16)),
-          Bytes32.fromHexString(toCanonicalS(signature[1]).toString(16)));
+      return Bytes.concatenate(Bytes.of(v), toBytesPadded(rValue, 32), toBytesPadded(sValue, 32));
     } catch (Exception e) {
       throw new SignatureException(e);
     }
@@ -64,6 +62,29 @@ public class ECDSASignature {
     }
 
     return Integer.valueOf(recId + 27).byteValue();
+  }
+
+  private static Bytes toBytesPadded(BigInteger value, int length) {
+    byte[] result = new byte[length];
+    byte[] bytes = value.toByteArray();
+
+    int bytesLength;
+    int srcOffset;
+    if (bytes[0] == 0) {
+      bytesLength = bytes.length - 1;
+      srcOffset = 1;
+    } else {
+      bytesLength = bytes.length;
+      srcOffset = 0;
+    }
+
+    if (bytesLength > length) {
+      throw new RuntimeException("Input is too large to put in byte array of size " + length);
+    }
+
+    int destOffset = length - bytesLength;
+    System.arraycopy(bytes, srcOffset, result, destOffset, bytesLength);
+    return Bytes.wrap(result);
   }
 
   private static BigInteger recoverFromSignature(
@@ -130,12 +151,8 @@ public class ECDSASignature {
     return CURVE.getCurve().decodePoint(compEnc);
   }
 
-  private BigInteger toCanonicalS(BigInteger s) {
-    if (s.compareTo(HALF_CURVE_ORDER) <= 0) {
-      return s;
-    } else {
-      return CURVE.getN().subtract(s);
-    }
+  private BigInteger toCanonical(BigInteger s) {
+    return s.compareTo(HALF_CURVE_ORDER) <= 0 ? s : CURVE.getN().subtract(s);
   }
 
   public static ECDSASignature fromKeyPair(final SECP256K1KeyPair keyPair) {
