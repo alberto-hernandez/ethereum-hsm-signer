@@ -5,10 +5,14 @@ import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.eth.Address;
+import org.bouncycastle.asn1.sec.SECNamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 
 public class SECP256K1KeyPair {
+  private static final X9ECParameters CURVE = SECNamedCurves.getByName("secp256k1");
+
   private static final int PUBLIC_KEY_LENGHT_BYTES = 64;
   private static final int PUBLIC_KEY_LENGHT_HEX = PUBLIC_KEY_LENGHT_BYTES << 1;
 
@@ -29,11 +33,11 @@ public class SECP256K1KeyPair {
 
   public static BigInteger publicKeyFromPrivate(final BigInteger privateKey) {
     BigInteger privKey = privateKey;
-    if (privKey.bitLength() > ECDSASignature.CURVE.getN().bitLength()) {
-      privKey = privKey.mod(ECDSASignature.CURVE.getN());
+    if (privKey.bitLength() > CURVE.getN().bitLength()) {
+      privKey = privKey.mod(CURVE.getN());
     }
 
-    ECPoint point = new FixedPointCombMultiplier().multiply(ECDSASignature.CURVE.getG(), privKey);
+    ECPoint point = new FixedPointCombMultiplier().multiply(CURVE.getG(), privKey);
     byte[] encoded = point.getEncoded(false);
     return new BigInteger(1, Arrays.copyOfRange(encoded, 1, encoded.length)); // remove prefix
   }

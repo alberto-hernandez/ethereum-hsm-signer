@@ -2,6 +2,7 @@ package com.github.ah.blockchain.signer.signature;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import lombok.Builder;
 import org.apache.tuweni.bytes.Bytes;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -15,21 +16,13 @@ import org.bouncycastle.math.ec.ECAlgorithms;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.math.ec.custom.sec.SecP256K1Curve;
 
+@Builder
 public class ECDSASignature {
-  public static final X9ECParameters CURVE = SECNamedCurves.getByName("secp256k1");
-  static final ECDomainParameters EC_DOMAIN_PARAMETERS =
-      new ECDomainParameters(CURVE.getCurve(), CURVE.getG(), CURVE.getN(), CURVE.getH());
-  static final BigInteger HALF_CURVE_ORDER = CURVE.getN().shiftRight(1);
-
-  private final ECDSASigner signer;
-  private final SECP256K1KeyPair keyPair;
-
-  public ECDSASignature(final SECP256K1KeyPair keyPair) {
-    this.keyPair = keyPair;
-
-    signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
-    signer.init(true, new ECPrivateKeyParameters(keyPair.getSecretKey(), EC_DOMAIN_PARAMETERS));
-  }
+  private X9ECParameters curve;
+  private ECDomainParameters ecDomainParameters;
+  private BigInteger halfCurveOrder;
+  private ECDSASigner signer;
+  private SECP256K1KeyPair keyPair;
 
   public Bytes sign(final Bytes transaction) {
     try {
@@ -87,7 +80,7 @@ public class ECDSASignature {
     return Bytes.wrap(result);
   }
 
-  private static BigInteger recoverFromSignature(
+  private BigInteger recoverFromSignature(
       final BigInteger order,
       final int recId,
       final BigInteger r,
@@ -137,25 +130,37 @@ public class ECDSASignature {
     BigInteger rInv = r.modInverse(order);
     BigInteger srInv = rInv.multiply(s).mod(order);
     BigInteger eInvrInv = rInv.multiply(eInv).mod(order);
-    ECPoint q = ECAlgorithms.sumOfTwoMultiplies(CURVE.getG(), eInvrInv, R, srInv);
+    ECPoint q = ECAlgorithms.sumOfTwoMultiplies(curve.getG(), eInvrInv, R, srInv);
 
     byte[] qBytes = q.getEncoded(false);
     // We remove the prefix
     return new BigInteger(1, Arrays.copyOfRange(qBytes, 1, qBytes.length));
   }
 
-  private static ECPoint decompressKey(BigInteger xBN, boolean yBit) {
+  private ECPoint decompressKey(BigInteger xBN, boolean yBit) {
     X9IntegerConverter x9 = new X9IntegerConverter();
-    byte[] compEnc = x9.integerToBytes(xBN, 1 + x9.getByteLength(CURVE.getCurve()));
+    byte[] compEnc = x9.integerToBytes(xBN, 1 + x9.getByteLength(curve.getCurve()));
     compEnc[0] = (byte) (yBit ? 0x03 : 0x02);
-    return CURVE.getCurve().decodePoint(compEnc);
+    return curve.getCurve().decodePoint(compEnc);
   }
 
   private BigInteger toCanonical(BigInteger s) {
-    return s.compareTo(HALF_CURVE_ORDER) <= 0 ? s : CURVE.getN().subtract(s);
+    return s.compareTo(halfCurveOrder) <= 0 ? s : curve.getN().subtract(s);
   }
 
-  public static ECDSASignature fromKeyPair(final SECP256K1KeyPair keyPair) {
-    return new ECDSASignature(keyPair);
+  public static ECDSASignature withSecp256k1(final SECP256K1KeyPair keyPair) {
+    X9ECParameters curve = SECNamedCurves.getByName("secp256k1");
+
+    ECDomainParameters parameters = new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(), curve.getH());
+    ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
+    signer.init(true, new ECPrivateKeyParameters(keyPair.getSecretKey(), parameters));
+
+    return ECDSASignature.builder()
+        .curve(curve)
+        .halfCurveOrder(curve.getN().shiftRight(1))
+        .ecDomainParameters(parameters)
+        .signer(signer)
+        .keyPair(keyPair)
+        .build();
   }
 }

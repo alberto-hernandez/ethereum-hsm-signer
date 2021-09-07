@@ -13,7 +13,7 @@ public class DefaultSigner implements Signer {
 
   public DefaultSigner(final SECP256K1KeyPair keyPair) {
     this.keyPair = keyPair;
-    ecdsaSignature = ECDSASignature.fromKeyPair(keyPair);
+    ecdsaSignature = ECDSASignature.withSecp256k1(keyPair);
   }
 
   @Override

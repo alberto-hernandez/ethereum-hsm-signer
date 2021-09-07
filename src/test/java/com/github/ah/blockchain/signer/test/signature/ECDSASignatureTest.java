@@ -17,7 +17,7 @@ class ECDSASignatureTest {
   public void shouldCalculateSignature() {
     SECP256K1KeyPair keyPair =
         SECP256K1KeyPair.fromSecretKey(new BigInteger(PRIVATE_KEY_STRING, 16));
-    ECDSASignature ecdsaSignature = new ECDSASignature(keyPair);
+    ECDSASignature ecdsaSignature = ECDSASignature.withSecp256k1(keyPair);
 
     Bytes expectedSignature =
         Bytes.concatenate(
@@ -52,7 +52,7 @@ class ECDSASignatureTest {
             Bytes.fromHexString(
                 "0x14a1cdf8521127c8a77e86e9fb2c7ddb13b77a5e09963bd8cec8fb479c0c2a13"));
 
-    ECDSASignature ecdsaSignature = new ECDSASignature(keyPair);
+    ECDSASignature ecdsaSignature = ECDSASignature.withSecp256k1(keyPair);
     Bytes signature = ecdsaSignature.sign(transaction);
     Assertions.assertNotNull(signature);
     Assertions.assertEquals(signature.toHexString(), expectedSignature.toHexString());
