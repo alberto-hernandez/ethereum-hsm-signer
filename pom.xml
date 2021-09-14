@@ -9,6 +9,8 @@
     <version>0.2.0-SNAPSHOT</version>
 
     <name>ethereum-hsm-signer</name>
+    <description>Message Library in order to create ECDSA Signer from an HSM</description>
+    <url>http://maven.apache.org</url>
 
     <licenses>
         <license>
@@ -30,7 +32,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
-        <org.web3j.version>4.8.5.signer</org.web3j.version>
         <org.lombok>1.18.20</org.lombok>
         <org.mockito>3.12.4</org.mockito>
         <org.apache-tuweni>2.0.0</org.apache-tuweni>
@@ -38,6 +39,12 @@
 
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:alberto-hernandez/ethereum-hsm-signer.git</connection>
+        <developerConnection>scm:git:git@github.com:alberto-hernandez/ethereum-hsm-signer.git</developerConnection>
+        <url>https://github.com:alberto-hernandez/ethereum-hsm-signer</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencyManagement>
         <dependencies>
@@ -247,46 +254,15 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>archiva.internal</id>
-            <name>Internal Release Repository</name>
-            <url>https://archiva.afbinnovation.com/repository/internal/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>archiva.snapshots</id>
-            <name>Internal Snapshot Repository</name>
-            <url>https://archiva.afbinnovation.com/repository/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <distributionManagement>
-        <repository>
-            <id>archiva.internal</id>
-            <name>Internal Release Repository</name>
-            <url>https://archiva.afbinnovation.com/repository/internal/</url>
-        </repository>
         <snapshotRepository>
-            <id>archiva.snapshots</id>
-            <name>Internal Snapshot Repository</name>
-            <url>https://archiva.afbinnovation.com/repository/snapshots/</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
 
