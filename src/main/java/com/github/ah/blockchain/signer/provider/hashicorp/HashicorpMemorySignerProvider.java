@@ -6,7 +6,6 @@ import com.github.ah.blockchain.signer.exception.SignerException;
 import com.github.ah.blockchain.signer.exception.SignerProviderException;
 import com.github.ah.blockchain.signer.secrets.SecretId;
 import com.github.ah.blockchain.signer.secrets.SecretValue;
-import com.github.ah.blockchain.signer.signature.SECP256K1KeyPair;
 import com.github.ah.blockchain.signer.signers.DefaultSigner;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -51,8 +50,7 @@ public class HashicorpMemorySignerProvider implements SecuredSignerProvider {
       SecretValue secretValue = hashicorpResolver.fetchSecretValue(secretId.get());
       BigInteger privatekey = new BigInteger(secretValue.getValue(), 16);
 
-      SECP256K1KeyPair keyPair = SECP256K1KeyPair.fromSecretKey(privatekey);
-      Signer signer = DefaultSigner.fromKeyPair(keyPair);
+      Signer signer = new DefaultSigner(privatekey);
 
       // If the Address is empty we skip the verification of the Signer Retrieved
       if (address.isPresent() && !signer.getAddress().equals(address.get())) {

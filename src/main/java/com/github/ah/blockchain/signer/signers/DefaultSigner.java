@@ -1,37 +1,35 @@
 package com.github.ah.blockchain.signer.signers;
 
 import com.github.ah.blockchain.signer.Signer;
-import com.github.ah.blockchain.signer.signature.ECDSASignature;
-import com.github.ah.blockchain.signer.signature.SECP256K1KeyPair;
+import com.github.ah.blockchain.signer.signature.ECSASigner;
+import com.github.ah.blockchain.signer.signature.SignatureUtils;
 import java.math.BigInteger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.eth.Address;
+import org.hyperledger.besu.crypto.KeyPair;
 
 public class DefaultSigner implements Signer {
-  private final SECP256K1KeyPair keyPair;
-  private final ECDSASignature ecdsaSignature;
+  private final KeyPair keyPair;
+  private final ECSASigner ecdsaSignature;
 
-  public DefaultSigner(final SECP256K1KeyPair keyPair) {
-    this.keyPair = keyPair;
-    ecdsaSignature = ECDSASignature.withSecp256k1(keyPair);
+  public DefaultSigner(final BigInteger privateKey) {
+    ecdsaSignature = ECSASigner.withSECP256K1();
+    this.keyPair = ecdsaSignature.keyPair(privateKey);
   }
 
   @Override
   public Bytes sign(final Bytes transaction) {
-    return ecdsaSignature.sign(transaction);
+    return ecdsaSignature.sign(transaction, keyPair);
   }
 
   @Override
   public Address getAddress() {
-    return SECP256K1KeyPair.toAddress(keyPair.getPublicKey());
+    return SignatureUtils.toAddress(keyPair.getPublicKey());
   }
 
   @Override
   public BigInteger getPublicKey() {
-    return keyPair.getPublicKey();
+    return SignatureUtils.toBigInteger(keyPair.getPublicKey());
   }
 
-  public static DefaultSigner fromKeyPair(final SECP256K1KeyPair keyPair) {
-    return new DefaultSigner(keyPair);
-  }
 }
