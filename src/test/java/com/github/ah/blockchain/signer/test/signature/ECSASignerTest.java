@@ -31,11 +31,12 @@ class ECSASignerTest {
 
     Bytes expectedSignature =
         Bytes.concatenate(
-            Bytes.of((byte) 27),
             Bytes.fromHexString(
                 "0x9631f6d21dec448a213585a4a41a28ef3d4337548aa34734478b563036163786"),
             Bytes.fromHexString(
-                "0x2ff816ee6bbb82719e983ecd8a33a4b45d32a4b58377ef1381163d75eedc900b"));
+                "0x2ff816ee6bbb82719e983ecd8a33a4b45d32a4b58377ef1381163d75eedc900b"),
+            Bytes.of((byte) 27)
+        );
 
     Bytes transactionSerialized = Bytes.wrap(TEST_MESSAGE.getBytes());
 
@@ -45,21 +46,41 @@ class ECSASignerTest {
   }
 
   @Test
-  public void transactionSignature() {
+  public void shouldCalculateSignatureSample2() {
     KeyPair keyPair = ecsaSigner.keyPair(new BigInteger("c85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4", 16));
 
     final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
 
     Bytes expectedSignature =
         Bytes.concatenate(
-            Bytes.of((byte) 28),
             Bytes.fromHexString(
                 "d2ce488f4da29e68f22cb05cac1b19b75df170a12b4ad1bdd4531b8e9115c6fb"),
             Bytes.fromHexString(
-                "75c1fe50a95e8ccffcbb5482a1e42fbbdd6324131dfe75c3b3b7f9a7c721eccb"));
+                "75c1fe50a95e8ccffcbb5482a1e42fbbdd6324131dfe75c3b3b7f9a7c721eccb"),
+            Bytes.of((byte) 28)
+        );
 
     Bytes signature = ecsaSigner.sign(data, keyPair);
     Assertions.assertNotNull(signature);
     Assertions.assertEquals(signature.toHexString(), expectedSignature.toHexString());
   }
+
+  @Test
+  public void shouldVerifySignature() {
+    KeyPair keyPair = ecsaSigner.keyPair(new BigInteger("c85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4", 16));
+
+    final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
+
+    Bytes signature =
+        Bytes.concatenate(
+            Bytes.fromHexString(
+                "d2ce488f4da29e68f22cb05cac1b19b75df170a12b4ad1bdd4531b8e9115c6fb"),
+            Bytes.fromHexString(
+                "75c1fe50a95e8ccffcbb5482a1e42fbbdd6324131dfe75c3b3b7f9a7c721eccb"),
+            Bytes.of((byte) 28)
+        );
+
+    Assertions.assertTrue(ecsaSigner.verify(data, signature, keyPair.getPublicKey()));
+  }
+
 }

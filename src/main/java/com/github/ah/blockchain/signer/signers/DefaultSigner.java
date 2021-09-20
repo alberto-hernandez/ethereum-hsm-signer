@@ -29,7 +29,7 @@ public class DefaultSigner implements Signer {
 
   @Override
   public BigInteger getPublicKey() {
-    return SignatureUtils.toBigInteger(keyPair.getPublicKey());
+    return keyPair.getPublicKey().getEncodedBytes().toUnsignedBigInteger();
   }
 
 }

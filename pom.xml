@@ -37,6 +37,12 @@
         <org.apache-tuweni>2.0.0</org.apache-tuweni>
         <commons.lang3>3.12.0</commons.lang3>
 
+        <jackson.version>2.12.5</jackson.version>
+        <besu.version>21.7.4</besu.version>
+
+        <vertx.version>3.9.1</vertx.version>
+        <okhttp.version>4.0.1</okhttp.version>
+        <commons-io.version>2.11.0</commons-io.version>
     </properties>
 
     <scm>
@@ -63,25 +69,38 @@
 
         <dependency>
             <groupId>org.hyperledger.besu.internal</groupId>
+            <artifactId>core</artifactId>
+            <version>${besu.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hyperledger.besu.internal</groupId>
             <artifactId>crypto</artifactId>
-            <version>21.7.4</version>
+            <version>${besu.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-            <version>3.9.1</version>
+            <version>${vertx.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web-client</artifactId>
-            <version>3.9.1</version>
+            <version>${vertx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuweni</groupId>
             <artifactId>tuweni-bytes</artifactId>
             <version>${org.apache-tuweni}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
@@ -131,19 +150,21 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.0.1</version>
+            <version>${okhttp.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>mockwebserver</artifactId>
-            <version>4.0.1</version>
+            <version>${okhttp.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>${commons-io.version}</version>
             <scope>test</scope>
         </dependency>
 

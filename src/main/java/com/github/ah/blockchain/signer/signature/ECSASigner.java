@@ -3,27 +3,44 @@ package com.github.ah.blockchain.signer.signature;
 import java.math.BigInteger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.MutableBytes;
+import org.hyperledger.besu.crypto.AbstractSECP256;
 import org.hyperledger.besu.crypto.Hash;
 import org.hyperledger.besu.crypto.KeyPair;
 import org.hyperledger.besu.crypto.SECP256K1;
 import org.hyperledger.besu.crypto.SECPPrivateKey;
 import org.hyperledger.besu.crypto.SECPPublicKey;
 import org.hyperledger.besu.crypto.SECPSignature;
-import org.hyperledger.besu.crypto.SignatureAlgorithm;
 
 public class ECSASigner {
-  private final SignatureAlgorithm signatureAlgorithm;
+  public static final byte V_BASE = (byte)27;
+  public static final int V_ARRAY_INDEX = 64;
 
-  public ECSASigner(final SignatureAlgorithm signatureAlgorithm) {
+  private final AbstractSECP256 signatureAlgorithm;
+
+  public ECSASigner(final AbstractSECP256 signatureAlgorithm) {
     this.signatureAlgorithm = signatureAlgorithm;
   }
 
+  /**
+   * Generates a signature and returned in Bytes in the order (r,s,v)
+   * @param rawBytes Bytes of the whole message
+   * @param keyPair KeyPair Used to Sign
+   * @return Return the Bytes of the Signature
+   */
   public Bytes sign (final Bytes rawBytes, final KeyPair keyPair) {
     final Bytes32 hash = Hash.keccak256(rawBytes);
     final SECPSignature signature = signatureAlgorithm.sign(hash, keyPair);
     return normalizeSignature(signature, keyPair.getPublicKey(), hash);
   }
 
+  /**
+   * Verify the Signaturre provided for a message corresponds to a the associated public key
+   * @param message Original Message Signed
+   * @param signature Signature of the Algorithm
+   * @param publicKey Public Key Algorithm
+   * @return Returns true if the signature matches with the public key argument
+   */
   public boolean verify (final Bytes message, final Bytes signature,  final SECPPublicKey publicKey) {
     SECPSignature secpSignature = toSECPSignature(signature);
     final Bytes32 hash = Hash.keccak256(message);
@@ -32,17 +49,17 @@ public class ECSASigner {
 
   private Bytes normalizeSignature(final SECPSignature signature, final SECPPublicKey publicKey, final Bytes32 hash) {
     final SECPSignature nSignature = signatureAlgorithm.normaliseSignature(signature.getR(), signature.getS(), publicKey, hash);
-    return Bytes.concatenate(
-        Bytes.of(nSignature.getRecId() + 27),
-        toBytesPadded(nSignature.getR(), 32),
-        toBytesPadded(nSignature.getS(), 32));
+    MutableBytes bytes = (MutableBytes)nSignature.encodedBytes();
+    // Update The V value
+    bytes.set(V_ARRAY_INDEX, (byte)(bytes.get(V_ARRAY_INDEX) + V_BASE));
+    return bytes;
   }
 
   private SECPSignature toSECPSignature (final Bytes signature) {
-    final BigInteger r = new BigInteger (signature.slice(1, 32).toArray());
-    final BigInteger s = new BigInteger (signature.slice(33, 32).toArray());
+    MutableBytes modified = signature.mutableCopy();
+    modified.set(V_ARRAY_INDEX, (byte)(modified.get(V_ARRAY_INDEX) - V_BASE));
 
-    return signatureAlgorithm.createSignature(r,s, (byte)(signature.get(0) - 27));
+    return signatureAlgorithm.decodeSignature(modified);
   }
 
   public KeyPair keyPair (final BigInteger privateKey) {
@@ -54,27 +71,4 @@ public class ECSASigner {
     return new ECSASigner(new SECP256K1());
   }
 
-
-  private static Bytes toBytesPadded(BigInteger value, int length) {
-    byte[] result = new byte[length];
-    byte[] bytes = value.toByteArray();
-
-    int bytesLength;
-    int srcOffset;
-    if (bytes[0] == 0) {
-      bytesLength = bytes.length - 1;
-      srcOffset = 1;
-    } else {
-      bytesLength = bytes.length;
-      srcOffset = 0;
-    }
-
-    if (bytesLength > length) {
-      throw new RuntimeException("Input is too large to put in byte array of size " + length);
-    }
-
-    int destOffset = length - bytesLength;
-    System.arraycopy(bytes, srcOffset, result, destOffset, bytesLength);
-    return Bytes.wrap(result);
-  }
 }
