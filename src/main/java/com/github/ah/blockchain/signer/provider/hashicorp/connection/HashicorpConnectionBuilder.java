@@ -11,7 +11,8 @@ import lombok.Builder;
 public class HashicorpConnectionBuilder {
   private Vertx vertx;
   private BasicParameters basicParameters;
-  private Optional<TlsOptions> tlsOptions;
+  @Builder.Default
+  private Optional<TlsOptions> tlsOptions = Optional.empty();
 
   public static final Long DEFAULT_TIMEOUT_MILLISECONDS = 10000L;
 

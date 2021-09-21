@@ -6,7 +6,7 @@
 
     <groupId>io.github.alberto-hernandez</groupId>
     <artifactId>ethereum-hsm-signer</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0-SNAPSHOT</version>
 
     <name>ethereum-hsm-signer</name>
     <description>Message Library in order to create ECDSA Signer from an HSM</description>
@@ -37,6 +37,12 @@
         <org.apache-tuweni>2.0.0</org.apache-tuweni>
         <commons.lang3>3.12.0</commons.lang3>
 
+        <jackson.version>2.12.5</jackson.version>
+        <besu.version>21.7.4</besu.version>
+
+        <vertx.version>3.9.1</vertx.version>
+        <okhttp.version>4.0.1</okhttp.version>
+        <commons-io.version>2.11.0</commons-io.version>
     </properties>
 
     <scm>
@@ -60,15 +66,29 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.hyperledger.besu.internal</groupId>
+            <artifactId>core</artifactId>
+            <version>${besu.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hyperledger.besu.internal</groupId>
+            <artifactId>crypto</artifactId>
+            <version>${besu.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-            <version>3.9.1</version>
+            <version>${vertx.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web-client</artifactId>
-            <version>3.9.1</version>
+            <version>${vertx.version}</version>
         </dependency>
 
         <dependency>
@@ -78,15 +98,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-eth</artifactId>
-            <version>${org.apache-tuweni}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.66</version>
+            <groupId>org.apache.tuweni</groupId>
+            <artifactId>tuweni-eth</artifactId>
+            <version>${org.apache-tuweni}</version>
         </dependency>
 
         <dependency>
@@ -126,6 +146,28 @@
             <version>${org.mockito}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>${okhttp.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
@@ -192,16 +234,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.0.1</version>
@@ -232,27 +264,15 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-                <configuration>
-                    <localCheckout>true</localCheckout>
-                    <pushChanges>false</pushChanges>
-                    <mavenExecutorId>forked-path</mavenExecutorId>
-                    <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.9.5</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>hyperledger</id>
+            <url>https://hyperledger.jfrog.io/hyperledger/besu-maven</url>
+        </repository>
+    </repositories>
 
     <distributionManagement>
         <snapshotRepository>
@@ -267,7 +287,7 @@
 
 
     <profiles>
-        <!-- GPG Signature on release -->
+        <!-- GPG ECSASigner on release -->
         <profile>
             <id>release-sign-artifacts</id>
             <activation>
