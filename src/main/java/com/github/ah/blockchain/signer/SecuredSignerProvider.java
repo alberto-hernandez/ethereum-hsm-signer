@@ -6,6 +6,8 @@ import org.apache.tuweni.eth.Address;
 
 public interface SecuredSignerProvider {
 
+  Signer get() throws SignerException;
+
   Signer get(final Address address) throws SignerException;
 
   Signer get(final Address address, final SecretId secretId) throws SignerException;

@@ -34,6 +34,11 @@ public class HashicorpMemorySignerProvider implements SecuredSignerProvider {
   }
 
   @Override
+  public Signer get() throws SignerException {
+    return get(Optional.empty(), secretId);
+  }
+
+  @Override
   public Signer get(final Address address) throws SignerException {
     return get(Optional.of(address), secretId);
   }
