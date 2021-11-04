@@ -14,6 +14,10 @@ public class BasicParameters implements ConnectionModifier {
     this.host = host;
   }
 
+  public BasicParameters(final int port) {
+    this (DEFAULT_SERVER_HOST, port);
+  }
+
   public BasicParameters() {
     this (DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
   }
