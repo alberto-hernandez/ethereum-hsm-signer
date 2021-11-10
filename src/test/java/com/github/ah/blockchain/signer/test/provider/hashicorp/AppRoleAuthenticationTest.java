@@ -7,6 +7,7 @@ import com.github.ah.blockchain.signer.provider.hashicorp.auth.Token;
 import com.github.ah.blockchain.signer.provider.hashicorp.auth.method.AppRole;
 import com.github.ah.blockchain.signer.provider.hashicorp.connection.BasicParameters;
 import com.github.ah.blockchain.signer.provider.hashicorp.connection.TlsOptions;
+import com.github.ah.blockchain.signer.provider.hashicorp.connection.TlsTypes;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Optional;
@@ -23,7 +24,11 @@ class AppRoleAuthenticationTest {
         HashicorpConnectionBuilder.builder()
             .basicParameters(new BasicParameters())
             .tlsOptions(
-                Optional.of (TlsOptions.builder().buildwithJks("src/test/resources/sample.jks", "changeit")))
+                Optional.of (TlsOptions.builder()
+                                .tlsType(TlsTypes.JKS)
+                                .trustStorePath("src/test/resources/sample.jks")
+                                .trustStorePassword("changeit")
+                                .build()))
             .vertx(Vertx.vertx())
             .build()
             .buildConnection();

@@ -1,5 +1,6 @@
 package com.github.ah.blockchain.signer.provider.hashicorp.connection;
 
+import com.github.ah.blockchain.signer.provider.hashicorp.HashicorpException;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.PemTrustOptions;
 import io.vertx.core.net.PfxOptions;
@@ -45,29 +46,58 @@ public class TlsOptions implements ConnectionModifier {
 
   public static class TlsOptionsBuilder {
     private boolean verifyHost;
+    private String trustStorePath;
+    private String trustStorePassword;
+    private TlsTypes tlsType;
 
     public TlsOptionsBuilder verifyHost(final boolean verifyHost) {
       this.verifyHost = verifyHost;
       return this;
     }
 
-    public TlsOptions buildwithJks(final String trustStorePath, final String password) {
+    public TlsOptionsBuilder tlsType (final TlsTypes tlsType) {
+      this.tlsType = tlsType;
+      return this;
+    }
+
+    public TlsOptionsBuilder trustStorePath (final String trustStorePath) {
+      this.trustStorePath = trustStorePath;
+      return this;
+    }
+
+    public TlsOptionsBuilder trustStorePassword (final String trustStorePassword) {
+      this.trustStorePassword = trustStorePassword;
+      return this;
+    }
+
+    public TlsOptions build () {
+      switch (tlsType) {
+        case JKS: return buildwithJks();
+        case PKCS12: return buildwithPkcs12();
+        case PEM: return buildwithPem();
+      }
+
+      throw new HashicorpException("TlsOption not defined");
+    }
+
+
+    private TlsOptions buildwithJks() {
       JksOptions jksOptions = new JksOptions();
       jksOptions.setPath(trustStorePath);
-      jksOptions.setPassword(password);
+      jksOptions.setPassword(trustStorePassword);
       return new TlsOptions(jksOptions, verifyHost);
     }
 
-    public TlsOptions buildwithPkcs12(final String trustStorePath, final String password) {
+    private TlsOptions buildwithPkcs12() {
       PfxOptions pfxOptions = new PfxOptions();
       pfxOptions.setPath(trustStorePath);
-      pfxOptions.setPassword(password);
+      pfxOptions.setPassword(trustStorePassword);
       return new TlsOptions(pfxOptions, verifyHost);
     }
 
-    public TlsOptions buildwithPem(final String certPath) {
+    private TlsOptions buildwithPem() {
       PemTrustOptions pemTrustOptions = new PemTrustOptions();
-      pemTrustOptions.addCertPath(certPath);
+      pemTrustOptions.addCertPath(trustStorePath);
       return new TlsOptions(pemTrustOptions, verifyHost);
     }
   }

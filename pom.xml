@@ -6,7 +6,7 @@
 
     <groupId>io.github.alberto-hernandez</groupId>
     <artifactId>ethereum-hsm-signer</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
 
     <name>ethereum-hsm-signer</name>
     <description>Message Library in order to create ECDSA Signer from an HSM</description>
