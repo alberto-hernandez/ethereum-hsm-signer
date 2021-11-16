@@ -24,7 +24,7 @@ public enum TlsTypes {
     return value;
   }
 
-  public Optional<TlsTypes> fromString (final String strValue) {
+  public static Optional<TlsTypes> fromString (final String strValue) {
     return Arrays.stream(TlsTypes.values()).filter( t -> t.value.equals(strValue)).findFirst();
   }
 
