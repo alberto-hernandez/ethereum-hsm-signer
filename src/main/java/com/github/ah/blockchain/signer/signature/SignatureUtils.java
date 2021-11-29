@@ -6,8 +6,8 @@ import org.hyperledger.besu.crypto.SECPPublicKey;
 public class SignatureUtils {
 
   public static Address toAddress(final SECPPublicKey publicKey) {
-    org.hyperledger.besu.ethereum.core.Address address =
-        org.hyperledger.besu.ethereum.core.Address.extract(publicKey);
+    org.hyperledger.besu.datatypes.Address address =
+        org.hyperledger.besu.datatypes.Address.extract(publicKey);
     return Address.fromHexString(address.toHexString());
   }
 }

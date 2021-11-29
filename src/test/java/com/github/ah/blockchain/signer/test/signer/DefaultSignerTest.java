@@ -3,16 +3,13 @@ package com.github.ah.blockchain.signer.test.signer;
 import com.github.ah.blockchain.signer.signature.SignatureUtils;
 import com.github.ah.blockchain.signer.signers.DefaultSigner;
 import java.math.BigInteger;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tuweni.eth.Address;
 import org.hyperledger.besu.crypto.KeyPair;
 import org.hyperledger.besu.crypto.SECP256K1;
 import org.hyperledger.besu.crypto.SECPPrivateKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class DefaultSignerTest {
   private static Logger LOG = Logger.getLogger(DefaultSigner.class.getName());
@@ -57,7 +54,7 @@ public class DefaultSignerTest {
     SECPPrivateKey privateKey = ecsa.createPrivateKey(new BigInteger("5621f9b17596910fc7cf2d8202e8ce15908513274a3506ba1f2a49714a091c29", 16));
     KeyPair keyPair = ecsa.createKeyPair(privateKey);
     Address addr = SignatureUtils.toAddress(keyPair.getPublicKey());
-    org.hyperledger.besu.ethereum.core.Address besuCore = org.hyperledger.besu.ethereum.core.Address.extract(keyPair.getPublicKey());
+    org.hyperledger.besu.datatypes.Address besuCore = org.hyperledger.besu.datatypes.Address.extract(keyPair.getPublicKey());
 
     LOG.info("PrivateKey " + keyPair.getPrivateKey().toString() + " - addr=" + addr);
     LOG.info("Correct " + keyPair.getPrivateKey().toString() + " - addr=" + besuCore);
