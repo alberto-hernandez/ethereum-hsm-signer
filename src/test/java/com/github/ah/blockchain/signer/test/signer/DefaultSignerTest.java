@@ -4,6 +4,7 @@ import com.github.ah.blockchain.signer.signature.SignatureUtils;
 import com.github.ah.blockchain.signer.signers.DefaultSigner;
 import java.math.BigInteger;
 import java.util.logging.Logger;
+import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.eth.Address;
 import org.hyperledger.besu.crypto.KeyPair;
 import org.hyperledger.besu.crypto.SECP256K1;
@@ -33,34 +34,6 @@ public class DefaultSignerTest {
   }
 
 
-
-  @Test
-  public void generateKeysAcholon() {
-    SECP256K1 ecsa = new SECP256K1();
-    for (int i = 0; i < 0; ) {
-      KeyPair keyPair = ecsa.generateKeyPair();
-      Address addr = SignatureUtils.toAddress(keyPair.getPublicKey());
-
-      if (addr != null) {
-        LOG.info("----------------------------------------------");
-        LOG.info("PrivateKey " + keyPair.getPrivateKey().toString() + " - addr=" + addr);
-        i++;
-      } else {
-        LOG.info("*******************************");
-
-      }
-    }
-
-    SECPPrivateKey privateKey = ecsa.createPrivateKey(new BigInteger("5621f9b17596910fc7cf2d8202e8ce15908513274a3506ba1f2a49714a091c29", 16));
-    KeyPair keyPair = ecsa.createKeyPair(privateKey);
-    Address addr = SignatureUtils.toAddress(keyPair.getPublicKey());
-    org.hyperledger.besu.datatypes.Address besuCore = org.hyperledger.besu.datatypes.Address.extract(keyPair.getPublicKey());
-
-    LOG.info("PrivateKey " + keyPair.getPrivateKey().toString() + " - addr=" + addr);
-    LOG.info("Correct " + keyPair.getPrivateKey().toString() + " - addr=" + besuCore);
-
-    //INFORMACIÓN: PrivateKey 5621f9b17596910fc7cf2d8202e8ce15908513274a3506ba1f2a49714a091c29 - addr=0x1c0691f121d4db669876f28d6439c8606b8bd2f2
-  }
 
 
 
