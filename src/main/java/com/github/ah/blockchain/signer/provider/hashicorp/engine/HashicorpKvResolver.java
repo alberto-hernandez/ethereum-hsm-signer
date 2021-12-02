@@ -10,6 +10,7 @@ import com.github.ah.blockchain.signer.secrets.SecretId;
 import com.github.ah.blockchain.signer.secrets.SecretList;
 import com.github.ah.blockchain.signer.secrets.SecretValue;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.predicate.ResponsePredicate;
@@ -107,7 +108,7 @@ public class HashicorpKvResolver implements HashicorpResolver {
 
       CompletableFuture<SecretList> future = new CompletableFuture<>();
       this.webClient
-          .raw(LIST_HTTP_METHOD, secretId.getKeyPath())
+          .request(HttpMethod.valueOf(LIST_HTTP_METHOD), secretId.getKeyPath())
           .putHeader(VAULT_TOKEN_HEADER, token.getValue())
           .timeout(requestTimeoutMs)
           .expect(ResponsePredicate.SC_SUCCESS)
