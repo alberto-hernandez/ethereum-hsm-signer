@@ -188,7 +188,7 @@
                     <artifactId>clover-maven-plugin</artifactId>
                     <version>4.4.1</version>
                     <configuration>
-                        <targetPercentage>0%</targetPercentage>
+                        <targetPercentage>45%</targetPercentage>
                     </configuration>
                 </plugin>
                 <plugin>

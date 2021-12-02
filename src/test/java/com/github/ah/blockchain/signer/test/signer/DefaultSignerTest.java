@@ -1,14 +1,8 @@
 package com.github.ah.blockchain.signer.test.signer;
 
-import com.github.ah.blockchain.signer.signature.SignatureUtils;
 import com.github.ah.blockchain.signer.signers.DefaultSigner;
 import java.math.BigInteger;
 import java.util.logging.Logger;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.eth.Address;
-import org.hyperledger.besu.crypto.KeyPair;
-import org.hyperledger.besu.crypto.SECP256K1;
-import org.hyperledger.besu.crypto.SECPPrivateKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,9 +26,4 @@ public class DefaultSignerTest {
     Assertions.assertNotNull(obtained);
     Assertions.assertEquals(obtained, PUBLIC_KEY);
   }
-
-
-
-
-
 }

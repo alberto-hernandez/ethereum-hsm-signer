@@ -46,13 +46,13 @@ HashicorpKvResolver kvResolver =
 
 // Retrieves the private key Id allocated at: /my-kv-engine-name/my-private-key
 SecretId secretId =  
-    new SecretId("/v1/my-kv-engine-name/data/my-private-key", Optional.of("privatekey"));        
-    
-HashicorpMemorySignerProvider hashicorpMemorySignerBuilder =  
+    new SecretId("/v1/my-kv-engine-name/data/my-private-key", Optional.of("privatekey"));
+
+SecuredSignerProvider securedSignerProvider =  
     new HashicorpMemorySignerProvider(kvResolver, secretId);  
   
-Signer signer =  
-    hashicorpMemorySignerBuilder.get(  
+Signer signer =
+    securedSignerProvider.get(  
         Address.fromHexString("0xef678007d18427e6022059dbc264f27507cd1ffc"));
 // Returns the private key allocated at the secretId Path defines which derivated address should match with the address parametrized
         
@@ -63,7 +63,7 @@ Once that the SignerProvider is created, it can be used using the next snipped:
 
 ```java
 
-Bytes transactionSerialized =  // Serialize the transaction to a org.apache.tuweni.bytes.Bytes;  
+Bytes transactionSerialized =  // Serialize the transaction/message to a org.apache.tuweni.bytes.Bytes;  
 Bytes signature = signer.sign(transactionSerialized);
 
 Bytes v_component = SignatureUtils.getV(signature);  
