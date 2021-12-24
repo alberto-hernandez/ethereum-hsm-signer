@@ -6,7 +6,7 @@
 
     <groupId>io.github.alberto-hernandez</groupId>
     <artifactId>ethereum-hsm-signer</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.6.0</version>
 
     <name>ethereum-hsm-signer</name>
     <description>Message Library in order to create ECDSA Signer from an HSM</description>
@@ -33,15 +33,15 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
         <org.lombok>1.18.22</org.lombok>
-        <org.mockito>4.1.0</org.mockito>
+        <org.mockito>4.2.0</org.mockito>
         <org.apache-tuweni>2.0.0</org.apache-tuweni>
         <commons.lang3>3.12.0</commons.lang3>
 
-        <jackson.version>2.13.0</jackson.version>
-        <besu.version>21.10.2</besu.version>
+        <jackson.version>2.13.1</jackson.version>
+        <besu.version>21.10.5</besu.version>
 
-        <vertx.version>4.2.1</vertx.version>
-        <okhttp.version>4.0.1</okhttp.version>
+        <vertx.version>4.2.3</vertx.version>
+        <okhttp.version>4.9.1</okhttp.version>
         <commons-io.version>2.11.0</commons-io.version>
         <org.junit>5.8.2</org.junit>
         <jacoco.version>0.8.7</jacoco.version>
