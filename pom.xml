@@ -202,7 +202,7 @@
                     <artifactId>dependency-check-maven</artifactId>
                     <version>7.1.0</version>
                     <configuration>
-                        <failBuildOnCVSS>5</failBuildOnCVSS>
+                        <failBuildOnCVSS>3</failBuildOnCVSS>
                         <!-- .Disable Net content-->
                         <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                         <nugetconfAnalyzerEnabled>false</nugetconfAnalyzerEnabled>
