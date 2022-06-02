@@ -4,10 +4,12 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.eth.Address;
 import org.hyperledger.besu.crypto.SECPPublicKey;
 
-public class SignatureUtils {
+public final class SignatureUtils {
 
   public static final int COMPONENTS_LENGTH = 32;
   public static final int V_LENGTH = 1;
+
+  private SignatureUtils() {}
 
   public static Address toAddress(final SECPPublicKey publicKey) {
     org.hyperledger.besu.datatypes.Address address =

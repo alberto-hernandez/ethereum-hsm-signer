@@ -6,7 +6,7 @@
 
     <groupId>io.github.alberto-hernandez</groupId>
     <artifactId>ethereum-hsm-signer</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0-SNAPSHOT</version>
 
     <name>ethereum-hsm-signer</name>
     <description>Message Library in order to create ECDSA Signer from an HSM</description>
@@ -32,16 +32,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
-        <org.lombok>1.18.22</org.lombok>
-        <org.mockito>4.2.0</org.mockito>
-        <org.apache-tuweni>2.0.0</org.apache-tuweni>
+        <org.lombok>1.18.24</org.lombok>
+        <org.mockito>4.6.0</org.mockito>
+        <org.apache-tuweni>2.2.0</org.apache-tuweni>
         <commons.lang3>3.12.0</commons.lang3>
 
-        <jackson.version>2.13.1</jackson.version>
-        <besu.version>21.10.5</besu.version>
+        <jackson.version>2.13.3</jackson.version>
+        <besu.version>22.4.2</besu.version>
 
-        <vertx.version>4.2.3</vertx.version>
-        <okhttp.version>4.9.1</okhttp.version>
+        <vertx.version>4.3.1</vertx.version>
+        <okhttp.version>4.9.3</okhttp.version>
         <commons-io.version>2.11.0</commons-io.version>
         <org.junit>5.8.2</org.junit>
         <jacoco.version>0.8.7</jacoco.version>
@@ -73,6 +73,20 @@
             <groupId>org.hyperledger.besu.internal</groupId>
             <artifactId>core</artifactId>
             <version>${besu.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty-all</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>netty-transport-native-epoll</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>netty-tcnative-boringssl-static</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -184,6 +198,21 @@
 
             <plugins>
                 <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>7.1.0</version>
+                    <configuration>
+                        <failBuildOnCVSS>5</failBuildOnCVSS>
+                        <!-- .Disable Net content-->
+                        <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+                        <nugetconfAnalyzerEnabled>false</nugetconfAnalyzerEnabled>
+                        <nuspecAnalyzerEnabled>false</nuspecAnalyzerEnabled>
+
+                        <suppressionFile>owasp-suppressions.xml</suppressionFile>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <groupId>org.openclover</groupId>
                     <artifactId>clover-maven-plugin</artifactId>
                     <version>4.4.1</version>
@@ -191,10 +220,11 @@
                         <targetPercentage>45%</targetPercentage>
                     </configuration>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
-                    <version>3.15.0</version>
+                    <version>3.16.0</version>
                     <configuration>
                         <rulesets>
                             <ruleset>./pmd-ruleset.xml</ruleset>
@@ -204,7 +234,7 @@
                         <dependency>
                             <groupId>org.ow2.asm</groupId>
                             <artifactId>asm</artifactId>
-                            <version>9.2</version>
+                            <version>9.3</version>
                         </dependency>
                     </dependencies>
                 </plugin>

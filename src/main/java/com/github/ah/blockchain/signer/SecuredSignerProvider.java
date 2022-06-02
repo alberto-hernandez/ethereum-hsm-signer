@@ -8,8 +8,8 @@ public interface SecuredSignerProvider {
 
   Signer get() throws SignerException;
 
-  Signer get(final Address address) throws SignerException;
+  Signer get(Address address) throws SignerException;
 
-  Signer get(final Address address, final SecretId secretId) throws SignerException;
+  Signer get(Address address, SecretId secretId) throws SignerException;
 
 }

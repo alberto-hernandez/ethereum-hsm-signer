@@ -8,8 +8,8 @@ import io.vertx.core.net.TrustOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 
 public class TlsOptions implements ConnectionModifier {
-  private TrustOptions trustOptions;
-  private boolean verifyHost;
+  private final TrustOptions trustOptions;
+  private final boolean verifyHost;
 
   private TlsOptions(final TrustOptions trustOptions, final boolean verifyHost) {
     this.trustOptions = trustOptions;
