@@ -7,9 +7,9 @@ import com.github.ah.blockchain.signer.secrets.SecretValue;
 
 public interface HashicorpResolver {
 
-  SecretValue fetchSecretValue(final SecretId secretId);
+  SecretValue fetchSecretValue(SecretId secretId);
 
-  SecretContent fetchSecret(final SecretId secretId);
+  SecretContent fetchSecret(SecretId secretId);
 
-  SecretList listSecret (final SecretId secretId);
+  SecretList listSecret (SecretId secretId);
 }

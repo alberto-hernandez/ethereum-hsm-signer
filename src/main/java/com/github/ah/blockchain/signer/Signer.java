@@ -11,7 +11,7 @@ public interface Signer {
    * @param transaction Transaction or Message Serialized
    * @return the ECSA signature in the form R,S,V
    */
-  Bytes sign(final Bytes transaction);
+  Bytes sign(Bytes transaction);
 
   /**
    * Returns the address derivated from the public key for signing
