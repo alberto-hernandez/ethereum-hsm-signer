@@ -79,7 +79,7 @@ public class HashicorpKvResolver implements HashicorpResolver {
                 if (response.failed()) {
                   future.completeExceptionally(
                       new HashicorpException(
-                          "Waiting for Hashicorp response was terminated unexpectedly ",
+                          "Waiting for Hashicorp response was terminated unexpectedly retrieveing: " + secretId,
                           response.cause()));
                   return;
                 }
