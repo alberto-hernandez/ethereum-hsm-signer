@@ -2,7 +2,9 @@ package com.github.ah.blockchain.signer.provider.hashicorp.auth;
 
 import com.github.ah.blockchain.signer.provider.hashicorp.HashicorpException;
 import com.github.ah.blockchain.signer.provider.hashicorp.auth.method.AppRole;
+import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.impl.headers.HeadersMultiMap;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
@@ -44,10 +46,14 @@ public class AppRoleAuthentication extends AuthenticationMethod {
     try {
       CompletableFuture<Token> future = new CompletableFuture<>();
 
+      HeadersMultiMap headers = new HeadersMultiMap();
+      appRole.getNamespace().ifPresent(h -> headers.add(VAULT_NAMESPACE_HEADER, h));
+
       this.webClient
           .post(AUTH_PATH)
           .timeout(10000)
           .expect(ResponsePredicate.SC_SUCCESS)
+          .putHeaders(headers)
           .sendJsonObject(
               new JsonObject()
                   .put(ROLE_ID_KEY, appRole.getRoleId())
@@ -69,6 +75,7 @@ public class AppRoleAuthentication extends AuthenticationMethod {
                           .accessor((String) auth.get(ACCESSOR))
                           .zonedDateTime(
                               ZonedDateTime.now().plusSeconds((Integer) auth.get(LEASE_DURATION)))
+                          .namespace(appRole.getNamespace())
                           .build();
 
                   future.complete(token);

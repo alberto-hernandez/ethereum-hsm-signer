@@ -7,7 +7,6 @@ import com.github.ah.blockchain.signer.provider.hashicorp.auth.Token;
 import com.github.ah.blockchain.signer.provider.hashicorp.auth.method.AppRole;
 import com.github.ah.blockchain.signer.provider.hashicorp.connection.BasicParameters;
 import com.github.ah.blockchain.signer.provider.hashicorp.connection.TlsOptions;
-import com.github.ah.blockchain.signer.provider.hashicorp.connection.TlsTypes;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Optional;
@@ -19,21 +18,16 @@ class AppRoleAuthenticationTest {
 
   @Test
   @Disabled
-  public void shouldRetrieveSecret() {
+  public void shouldAuthenticateOnOpenVersion() {
     WebClient webClient =
         HashicorpConnectionBuilder.builder()
             .basicParameters(new BasicParameters())
-            .tlsOptions(
-                Optional.of (TlsOptions.builder()
-                                .tlsType(TlsTypes.JKS)
-                                .trustStorePath("src/test/resources/sample.jks")
-                                .trustStorePassword("changeit")
-                                .build()))
+            .tlsOptions(Optional.empty())
             .vertx(Vertx.vertx())
             .build()
             .buildConnection();
 
-    AppRole appRole= new AppRole("1a8f8e22-ce03-4ec2-1095-09d0bdf038df", "e4a0c14f-32db-3c94-0ad3-a4c68970a9ee");
+    AppRole appRole= new AppRole("a2f0df44-243d-ce3f-91be-0da225e67096", "dc0ac280-c827-853b-c17d-f6251533bd8c");
 
     AuthenticationMethod authenticationMethod = new AppRoleAuthentication(webClient, appRole);
     Optional<Token> optionalToken = authenticationMethod.authenticate();
@@ -42,4 +36,29 @@ class AppRoleAuthenticationTest {
     Assertions.assertTrue(optionalToken.get().getValue().length() > 0, "Token value returned is empty");
     Assertions.assertTrue(!optionalToken.get().isExpired(), "Token is expired");
   }
+
+  @Test
+  @Disabled
+  public void shouldAuthenticateOnHCP() {
+
+    final String hcpHost = "";
+    WebClient webClient =
+        HashicorpConnectionBuilder.builder()
+            .basicParameters(new BasicParameters(hcpHost, 8200))
+            .tlsOptions(Optional.of(TlsOptions.builder().verifyHost(true).build()))
+            .vertx(Vertx.vertx())
+            .build()
+            .buildConnection();
+
+    AppRole appRole= new AppRole("55455e76-02f9-0e4e-f0c3-394ab5e34510", "c0ddbc29-af25-0fa4-acab-0f90e45baf2b", Optional.of("admin/blockchain-dev"));
+
+    AuthenticationMethod authenticationMethod = new AppRoleAuthentication(webClient, appRole);
+    Optional<Token> optionalToken = authenticationMethod.authenticate();
+
+    Assertions.assertTrue(optionalToken.isPresent());
+    Assertions.assertTrue(optionalToken.get().getValue().length() > 0, "Token value returned is empty");
+    Assertions.assertTrue(!optionalToken.get().isExpired(), "Token is expired");
+  }
+
+
 }

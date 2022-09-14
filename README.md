@@ -15,12 +15,12 @@ In order to use the library you need to include it as a dependency in your proje
 <dependency>
 	<groupId>io.github.alberto-hernandez</groupId>  
 	<artifactId>ethereum-hsm-signer</artifactId>  
-	<version>0.7.0</version>
+	<version>0.8.0</version>
 </dependency>
 ```  
 **Gradle:**
 ```gradle
-io.github.alberto-hernandez:ethereum-hsm-signer:0.6.0-SNAPSHOT
+io.github.alberto-hernandez:ethereum-hsm-signer:0.8.0
 ```  
 After that, build your project.
 
