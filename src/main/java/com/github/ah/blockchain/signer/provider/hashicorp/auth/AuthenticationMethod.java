@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public abstract class AuthenticationMethod {
+  public static final String VAULT_TOKEN_HEADER = "X-Vault-Token";
+  public static final String VAULT_NAMESPACE_HEADER = "X-Vault-Namespace";
 
   private Optional<Token> token;
 

@@ -6,7 +6,7 @@
 
     <groupId>io.github.alberto-hernandez</groupId>
     <artifactId>ethereum-hsm-signer</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
 
     <name>ethereum-hsm-signer</name>
     <description>Message Library in order to create ECDSA Signer from an HSM</description>
@@ -33,17 +33,17 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
         <org.lombok>1.18.24</org.lombok>
-        <org.mockito>4.6.0</org.mockito>
+        <org.mockito>4.8.0</org.mockito>
         <org.apache-tuweni>2.2.0</org.apache-tuweni>
         <commons.lang3>3.12.0</commons.lang3>
 
-        <jackson.version>2.13.3</jackson.version>
+        <jackson.version>2.13.4</jackson.version>
         <besu.version>22.4.2</besu.version>
 
-        <vertx.version>4.3.1</vertx.version>
-        <okhttp.version>4.9.3</okhttp.version>
+        <vertx.version>4.3.3</vertx.version>
+        <okhttp.version>4.10.0</okhttp.version>
         <commons-io.version>2.11.0</commons-io.version>
-        <org.junit>5.8.2</org.junit>
+        <org.junit>5.9.0</org.junit>
         <jacoco.version>0.8.7</jacoco.version>
     </properties>
 
@@ -344,7 +344,7 @@
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
                         <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.12.0</version>
+                        <version>1.13.0</version>
                     </dependency>
                 </dependencies>
             </plugin>

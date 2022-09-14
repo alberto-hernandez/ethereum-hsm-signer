@@ -11,6 +11,7 @@ import com.github.ah.blockchain.signer.secrets.SecretList;
 import com.github.ah.blockchain.signer.secrets.SecretValue;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.impl.headers.HeadersMultiMap;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.predicate.ResponsePredicate;
@@ -24,7 +25,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class HashicorpKvResolver implements HashicorpResolver {
 
-  private static final String VAULT_TOKEN_HEADER = "X-Vault-Token";
   private static final String VAULT_ERROR_RESPONSE_KEY = "errors";
   private static final String VAULT_DATA_KEY = "data";
   private static final String VAULT_LIST_KEY = "keys";
@@ -63,10 +63,15 @@ public class HashicorpKvResolver implements HashicorpResolver {
       Token token =
           optToken.orElseThrow(() -> new HashicorpException("Could not get Token with AuthMethod"));
 
+      // Settings the Authentication Header with namespace in case of applied
+      HeadersMultiMap headers = new HeadersMultiMap();
+      headers.add(AuthenticationMethod.VAULT_TOKEN_HEADER, token.getValue());
+      token.getNamespace().ifPresent(h -> headers.set(AuthenticationMethod.VAULT_NAMESPACE_HEADER, h));
+
       CompletableFuture<SecretContent> future = new CompletableFuture<>();
       this.webClient
           .get(secretId.getKeyPath())
-          .putHeader(VAULT_TOKEN_HEADER, token.getValue())
+          .putHeaders(headers)
           .timeout(requestTimeoutMs)
           .expect(ResponsePredicate.SC_SUCCESS)
           .send(
@@ -74,7 +79,7 @@ public class HashicorpKvResolver implements HashicorpResolver {
                 if (response.failed()) {
                   future.completeExceptionally(
                       new HashicorpException(
-                          "Waiting for Hashicorp response was terminated unexpectedly ",
+                          "Waiting for Hashicorp response was terminated unexpectedly retrieveing: " + secretId,
                           response.cause()));
                   return;
                 }
@@ -106,10 +111,15 @@ public class HashicorpKvResolver implements HashicorpResolver {
       Token token =
           optToken.orElseThrow(() -> new HashicorpException("Could not get Token with AuthMethod"));
 
+      // Settings the Authentication Header with namespace in case of applied
+      HeadersMultiMap headers = new HeadersMultiMap();
+      headers.add(AuthenticationMethod.VAULT_TOKEN_HEADER, token.getValue());
+      token.getNamespace().ifPresent(h -> headers.set(AuthenticationMethod.VAULT_NAMESPACE_HEADER, h));
+
       CompletableFuture<SecretList> future = new CompletableFuture<>();
       this.webClient
           .request(HttpMethod.valueOf(LIST_HTTP_METHOD), secretId.getKeyPath())
-          .putHeader(VAULT_TOKEN_HEADER, token.getValue())
+          .putHeaders(headers)
           .timeout(requestTimeoutMs)
           .expect(ResponsePredicate.SC_SUCCESS)
           .send(

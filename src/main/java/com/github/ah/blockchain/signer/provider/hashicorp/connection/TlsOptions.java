@@ -18,12 +18,12 @@ public class TlsOptions implements ConnectionModifier {
 
   @Override
   public void apply(final WebClientOptions webClientOptions) {
+    webClientOptions.setSsl(true);
+    webClientOptions.setVerifyHost(verifyHost);
+
     if (trustOptions == null) {
       return;
     }
-
-    webClientOptions.setSsl(true);
-    webClientOptions.setVerifyHost(verifyHost);
 
     if (trustOptions instanceof JksOptions) {
       webClientOptions.setTrustStoreOptions((JksOptions) trustOptions);
@@ -48,15 +48,15 @@ public class TlsOptions implements ConnectionModifier {
     private boolean verifyHost;
     private String trustStorePath;
     private String trustStorePassword;
-    private TlsTypes tlsType;
+    private TlsTrustType tlsTrustType = TlsTrustType.NO_TRUST;
 
     public TlsOptionsBuilder verifyHost(final boolean verifyHost) {
       this.verifyHost = verifyHost;
       return this;
     }
 
-    public TlsOptionsBuilder tlsType (final TlsTypes tlsType) {
-      this.tlsType = tlsType;
+    public TlsOptionsBuilder tlsType (final TlsTrustType tlsType) {
+      this.tlsTrustType = tlsType;
       return this;
     }
 
@@ -71,10 +71,11 @@ public class TlsOptions implements ConnectionModifier {
     }
 
     public TlsOptions build () {
-      switch (tlsType) {
+      switch (tlsTrustType) {
         case JKS: return buildwithJks();
         case PKCS12: return buildwithPkcs12();
         case PEM: return buildwithPem();
+        case NO_TRUST: return new TlsOptions(null, verifyHost);
       }
 
       throw new HashicorpException("TlsOption not defined");
