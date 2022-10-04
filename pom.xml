@@ -6,7 +6,7 @@
 
     <groupId>io.github.alberto-hernandez</groupId>
     <artifactId>ethereum-hsm-signer</artifactId>
-    <version>0.8.0</version>
+    <version>0.8.1</version>
 
     <name>ethereum-hsm-signer</name>
     <description>Message Library in order to create ECDSA Signer from an HSM</description>
@@ -40,10 +40,10 @@
         <jackson.version>2.13.4</jackson.version>
         <besu.version>22.4.2</besu.version>
 
-        <vertx.version>4.3.3</vertx.version>
+        <vertx.version>4.3.4</vertx.version>
         <okhttp.version>4.10.0</okhttp.version>
         <commons-io.version>2.11.0</commons-io.version>
-        <org.junit>5.9.0</org.junit>
+        <org.junit>5.9.1</org.junit>
         <jacoco.version>0.8.7</jacoco.version>
     </properties>
 
@@ -234,7 +234,7 @@
                         <dependency>
                             <groupId>org.ow2.asm</groupId>
                             <artifactId>asm</artifactId>
-                            <version>9.3</version>
+                            <version>9.4</version>
                         </dependency>
                     </dependencies>
                 </plugin>

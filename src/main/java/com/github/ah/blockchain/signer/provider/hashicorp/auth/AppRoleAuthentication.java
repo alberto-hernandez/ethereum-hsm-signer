@@ -2,7 +2,6 @@ package com.github.ah.blockchain.signer.provider.hashicorp.auth;
 
 import com.github.ah.blockchain.signer.provider.hashicorp.HashicorpException;
 import com.github.ah.blockchain.signer.provider.hashicorp.auth.method.AppRole;
-import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.impl.headers.HeadersMultiMap;
 import io.vertx.core.json.Json;
@@ -60,10 +59,7 @@ public class AppRoleAuthentication extends AuthenticationMethod {
                   .put(SECRET_ID_KEY, appRole.getSecretId()),
               (response) -> {
                 if (response.failed()) {
-                  future.completeExceptionally(
-                      new HashicorpException(
-                          "Waiting for Hashicorp response was terminated unexpectedly ",
-                          response.cause()));
+                  future.completeExceptionally(response.cause());
                   return;
                 }
                 if (response.succeeded()) {
