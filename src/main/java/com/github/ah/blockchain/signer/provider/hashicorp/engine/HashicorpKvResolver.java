@@ -77,10 +77,7 @@ public class HashicorpKvResolver implements HashicorpResolver {
           .send(
               (response) -> {
                 if (response.failed()) {
-                  future.completeExceptionally(
-                      new HashicorpException(
-                          "Waiting for Hashicorp response was terminated unexpectedly retrieveing: " + secretId,
-                          response.cause()));
+                  future.completeExceptionally(response.cause());
                   return;
                 }
                 if (response.succeeded()) {
@@ -125,10 +122,7 @@ public class HashicorpKvResolver implements HashicorpResolver {
           .send(
               (response) -> {
                 if (response.failed()) {
-                  future.completeExceptionally(
-                      new HashicorpException(
-                          "Waiting for Hashicorp response was terminated unexpectedly ",
-                          response.cause()));
+                  future.completeExceptionally(response.cause());
                   return;
                 }
                 if (response.succeeded()) {
@@ -148,7 +142,7 @@ public class HashicorpKvResolver implements HashicorpResolver {
 
       return future.get();
     } catch (Exception ex) {
-      throw new HashicorpException("unable to recover the Secret", ex);
+      throw new HashicorpException("Unable to recover the Secret", ex);
     }
   }
 
